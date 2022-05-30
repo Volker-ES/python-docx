@@ -13,7 +13,7 @@ from .ns import nsdecls, qn
 from ..shared import Emu, Twips
 from .simpletypes import (
     ST_HexColor, ST_Merge, ST_Shd, ST_TblLayoutType, ST_TblWidth,
-    ST_TwipsMeasure, XsdIntT_TwipsMeasure, XsdInt
+    ST_TwipsMeasure, XsdInt
 )
 from .xmlchemy import (
     BaseOxmlElement, OneAndOnlyOne, OneOrMore, OptionalAttribute,
