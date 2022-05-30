@@ -163,6 +163,7 @@ from .table import (  # noqa
     CT_TrPr,
     CT_VMerge,
     CT_VerticalJc,
+    CT_Shd,
 )
 register_element_cls('w:bidiVisual', CT_OnOff)
 register_element_cls('w:gridCol',    CT_TblGridCol)
@@ -180,6 +181,7 @@ register_element_cls('w:trHeight',   CT_Height)
 register_element_cls('w:trPr',       CT_TrPr)
 register_element_cls('w:vAlign',     CT_VerticalJc)
 register_element_cls('w:vMerge',     CT_VMerge)
+register_element_cls('w:shd',        CT_Shd)
 
 from .text.font import (  # noqa
     CT_Color,
