@@ -332,6 +332,11 @@ class _Cell(BlockItemContainer):
     def shd_val(self, value):
         self._tcPr.shd_val = value
 
+    def add_border(self,position,**attrs):
+        func_name='_add_' + position
+        add_func=getattr(self._tc.get_or_add_tcPr().get_or_add_tcBorders(),func_name)
+        add_func(**attrs)
+
     @property
     def _tcPr(self):
         return self._tc.tcPr
