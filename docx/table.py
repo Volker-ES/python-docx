@@ -382,6 +382,12 @@ class _Column(Parented):
         """
         return self._gridCol.gridCol_idx
 
+    def add_border(self,position,**attrs):
+        for c in self.cells:
+            func_name='_add_' + position
+            add_func=getattr(c._tc.get_or_add_tcPr().get_or_add_tcBorders(),func_name)
+            add_func(**attrs)
+
 
 class _Columns(Parented):
     """
