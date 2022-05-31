@@ -298,6 +298,7 @@ class _Cell(BlockItemContainer):
     def width(self, value):
         self._tc.width = value
 
+    
     @property
     def shd_fill(self):
         """
@@ -475,6 +476,11 @@ class _Row(Parented):
         """
         return self._tr.tr_idx
 
+    def add_border(self,position,**attrs):
+        for c in self.cells:
+            func_name='_add_' + position
+            add_func=getattr(c._tc.get_or_add_tcPr().get_or_add_tcBorders(),func_name)
+            add_func(**attrs)
 
 class _Rows(Parented):
     """
