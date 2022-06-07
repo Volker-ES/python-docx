@@ -28,9 +28,33 @@ class CT_Body(BaseOxmlElement):
     ``<w:body>``, the container element for the main document story in
     ``document.xml``.
     """
-    p = ZeroOrMore('w:p', successors=('w:sectPr',))
-    tbl = ZeroOrMore('w:tbl', successors=('w:sectPr',))
-    sectPr = ZeroOrOne('w:sectPr', successors=())
+
+    p = ZeroOrMore("w:p", successors=("w:sectPr",))
+    tbl = ZeroOrMore("w:tbl", successors=("w:sectPr",))
+    bookmarkStart = ZeroOrMore("w:bookmarkStart", successors=("w:sectPr",))
+    bookmarkEnd = ZeroOrMore("w:bookmarkEnd", successors=("w:sectPr",))
+    sectPr = ZeroOrOne("w:sectPr", successors=())
+
+    def add_bookmarkEnd(self, bookmark_id):
+        """Return `w:bookmarkEnd` element added at end of document.
+        The newly added `w:bookmarkEnd` element is linked to it's `w:bookmarkStart`
+        counterpart by `bookmark_id`. It is the caller's responsibility to determine
+        `bookmark_id` matches that of the intended `bookmarkStart` element.
+        """
+        bookmarkEnd = self._add_bookmarkEnd()
+        bookmarkEnd.id = bookmark_id
+        return bookmarkEnd
+
+    def add_bookmarkStart(self, name, bookmark_id):
+        """Return `w:bookmarkStart` element added at end of document.
+        The newly added `w:bookmarkStart` element is identified by both `name` and
+        `bookmark_id`. It is the caller's responsibility to determine that both `name`
+        and `bookmark_id` are unique, document-wide.
+        """
+        bookmarkStart = self._add_bookmarkStart()
+        bookmarkStart.name = name
+        bookmarkStart.id = bookmark_id
+        return bookmarkStart
 
     def add_section_break(self):
         """Return `w:sectPr` element for new section added at end of document.

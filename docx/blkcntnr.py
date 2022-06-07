@@ -8,8 +8,9 @@ specialized ones like structured document tags.
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from docx.bookmark import _Bookmark
 from docx.oxml.table import CT_Tbl
-from docx.shared import Parented
+from docx.shared import lazyproperty, Parented
 from docx.text.paragraph import Paragraph
 
 
@@ -50,6 +51,14 @@ class BlockItemContainer(Parented):
         self._element._insert_tbl(tbl)
         return Table(tbl, self)
 
+    def end_bookmark(self, bookmark):
+        """
+        Return 'bookmark' after closing it after last block item in container.
+        """
+        if bookmark.is_closed:
+            raise ValueError("bookmark already closed")
+        return bookmark.close(self._element.add_bookmarkEnd(bookmark.id))
+        
     @property
     def paragraphs(self):
         """
@@ -57,6 +66,20 @@ class BlockItemContainer(Parented):
         order. Read-only.
         """
         return [Paragraph(p, self) for p in self._element.p_lst]
+
+    def start_bookmark(self, name):
+        """
+        Return newly-added |_Bookmark| object identified by `name`.
+        The returned bookmark is anchored at the end of this block-item container, for
+        example, after the last paragraph in the document when the document body is the
+        block-item container.
+        """
+        if name in self.bookmarks:
+            raise KeyError("Document already contains bookmark with name %s" % name)
+        
+        return _Bookmark(
+            (self._element.add_bookmarkStart(name, self._bookmarks.next_id), None)
+        )
 
     @property
     def tables(self):
@@ -73,3 +96,10 @@ class BlockItemContainer(Parented):
         container.
         """
         return Paragraph(self._element.add_p(), self)
+
+    @lazyproperty
+    def _bookmarks(self):
+        """
+        Global |Bookmarks| object for overall document.
+        """
+        return self.part.bookmarks

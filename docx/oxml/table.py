@@ -413,9 +413,32 @@ class CT_TblWidth(BaseOxmlElement):
 class CT_Tc(BaseOxmlElement):
     """`w:tc` table cell element"""
 
-    tcPr = ZeroOrOne('w:tcPr')  # bunches of successors, overriding insert
-    p = OneOrMore('w:p')
-    tbl = OneOrMore('w:tbl')
+    tcPr = ZeroOrOne("w:tcPr")  # bunches of successors, overriding insert
+    p = OneOrMore("w:p")
+    tbl = OneOrMore("w:tbl")
+    bookmarkStart = ZeroOrMore("w:bookmarkStart", successors=())
+    bookmarkEnd = ZeroOrMore("w:bookmarkEnd", successors=())
+
+    def add_bookmarkEnd(self, bookmark_id):
+        """Return `w:bookmarkEnd` element added at end of this cell.
+        The newly added `w:bookmarkEnd` element is linked to it's `w:bookmarkStart`
+        counterpart by `bookmark_id`. It is the caller's responsibility to determine
+        `bookmark_id` matches that of the intended `bookmarkStart` element.
+        """
+        bookmarkEnd = self._add_bookmarkEnd()
+        bookmarkEnd.id = bookmark_id
+        return bookmarkEnd
+
+    def add_bookmarkStart(self, name, bookmark_id):
+        """Return `w:bookmarkStart` element added at the end of this cell.
+        The newly added `w:bookmarkStart` element is identified by both `name` and
+        `bookmark_id`. It is the caller's responsibility to determine that both `name`
+        and `bookmark_id` are unique, document-wide.
+        """
+        bookmarkStart = self._add_bookmarkStart()
+        bookmarkStart.name = name
+        bookmarkStart.id = bookmark_id
+        return bookmarkStart
 
     @property
     def bottom(self):

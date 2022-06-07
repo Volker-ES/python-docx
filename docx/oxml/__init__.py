@@ -68,6 +68,9 @@ from .shared import CT_DecimalNumber, CT_OnOff, CT_String  # noqa
 register_element_cls("w:evenAndOddHeaders", CT_OnOff)
 register_element_cls("w:titlePg", CT_OnOff)
 
+from docx.oxml.bookmark import CT_Bookmark, CT_MarkupRange # noqa
+register_element_cls("w:bookmarkEnd", CT_MarkupRange)
+register_element_cls("w:bookmarkStart", CT_Bookmark)
 
 from .coreprops import CT_CoreProperties  # noqa
 register_element_cls('cp:coreProperties', CT_CoreProperties)
@@ -75,6 +78,12 @@ register_element_cls('cp:coreProperties', CT_CoreProperties)
 from .document import CT_Body, CT_Document  # noqa
 register_element_cls('w:body',     CT_Body)
 register_element_cls('w:document', CT_Document)
+
+from docx.oxml.endnotes import CT_Endnotes # noqa
+register_element_cls('w:endnotes', CT_Endnotes)
+
+from docx.oxml.footnotes import CT_Footnotes # noqa
+register_element_cls('w:footnotes', CT_Footnotes)
 
 from .numbering import CT_Num, CT_Numbering, CT_NumLvl, CT_NumPr  # noqa
 register_element_cls('w:abstractNumId', CT_DecimalNumber)
@@ -106,7 +115,7 @@ register_element_cls("w:type", CT_SectType)
 from .settings import CT_Settings  # noqa
 register_element_cls("w:settings", CT_Settings)
 
-from .shape import (  # noqa
+from docx.oxml.shape import (  # noqa
     CT_Blip,
     CT_BlipFillProperties,
     CT_GraphicalObject,
