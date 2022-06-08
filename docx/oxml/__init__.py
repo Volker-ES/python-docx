@@ -95,6 +95,9 @@ register_element_cls('w:numPr',         CT_NumPr)
 register_element_cls('w:numbering',     CT_Numbering)
 register_element_cls('w:startOverride', CT_DecimalNumber)
 
+from docx.oxml.section import CT_PageMar  # noqa
+from docx.oxml.section import CT_HdrFtr, CT_HdrFtrRef, CT_PageSz, CT_SectPr, CT_SectType
+
 from .section import (  # noqa
     CT_HdrFtr,
     CT_HdrFtrRef,
@@ -265,3 +268,7 @@ from .text.run import CT_Br, CT_R, CT_Text  # noqa
 register_element_cls('w:br', CT_Br)
 register_element_cls('w:r',  CT_R)
 register_element_cls('w:t',  CT_Text)
+
+from docx.oxml.field import CT_SimpleField
+
+register_element_cls("w:fldSimple", CT_SimpleField)

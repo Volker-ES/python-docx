@@ -8,10 +8,13 @@ from __future__ import (
     absolute_import, division, print_function, unicode_literals
 )
 
-from ..enum.style import WD_STYLE_TYPE
-from .parfmt import ParagraphFormat
-from .run import Run
-from ..shared import Parented
+from docx.bookmark import _Bookmark
+from docx.enum.fields import WD_FIELD_TYPE
+from docx.enum.style import WD_STYLE_TYPE
+from docx.shared import Parented
+from docx.text.fields import Field
+from docx.text.parfmt import ParagraphFormat
+from docx.text.run import Run
 
 
 class Paragraph(Parented):
@@ -21,6 +24,17 @@ class Paragraph(Parented):
     def __init__(self, p, parent):
         super(Paragraph, self).__init__(parent)
         self._p = self._element = p
+
+    def add_field(self, fieldtype=WD_FIELD_TYPE.REF, switches=None):
+        """
+        Return a |Field| element which will be evaluated upon updating the
+        fields in the word editor. A field should be a member of the `WD_FIELD_TYPE`
+        enumeration. An can have various different switches. For example a 'REF'
+        field requires a bookmark name and a \h switch to work as a proper hyperlink.
+        """
+        r = self._p.add_r()
+        fld = r.add_field(fieldtype, switches)
+        return Field(fld)
 
     def add_run(self, text=None, style=None):
         """
@@ -62,6 +76,12 @@ class Paragraph(Parented):
         self._p.clear_content()
         return self
 
+    def end_bookmark(self, bookmark):
+        """Return `bookmark` after closing it after last block item in container."""
+        if bookmark.is_closed:
+            raise ValueError("bookmark already closed")
+        return bookmark.close(self._element.add_bookmarkEnd(bookmark.id))
+
     def insert_paragraph_before(self, text=None, style=None):
         """
         Return a newly created paragraph, inserted directly before this
@@ -91,6 +111,22 @@ class Paragraph(Parented):
         this paragraph.
         """
         return [Run(r, self) for r in self._p.r_lst]
+
+    def start_bookmark(self, name):
+        """Return newly-added |_Bookmark| object identified by `name`.
+        The returned bookmark is anchored at the end of this block-item container, for
+        example, after the last paragraph in the document when the document body is the
+        block-item container.
+        """
+
+        if name in self._parent._bookmarks:
+            raise KeyError("Document already contains bookmark with name %s" % name)
+        return _Bookmark(
+            (
+                self._element.add_bookmarkStart(name, self._parent._bookmarks.next_id),
+                None,
+            )
+        )
 
     @property
     def style(self):

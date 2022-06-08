@@ -4,6 +4,7 @@
 Custom element classes related to text runs (CT_R).
 """
 
+from docx.enum.fields import WD_FIELD_TYPE
 from ..ns import qn
 from ..simpletypes import ST_BrClear, ST_BrType
 from ..xmlchemy import (
@@ -23,12 +24,20 @@ class CT_R(BaseOxmlElement):
     """
     ``<w:r>`` element, containing the properties and text for a run.
     """
-    rPr = ZeroOrOne('w:rPr')
-    t = ZeroOrMore('w:t')
-    br = ZeroOrMore('w:br')
-    cr = ZeroOrMore('w:cr')
-    tab = ZeroOrMore('w:tab')
-    drawing = ZeroOrMore('w:drawing')
+    rPr = ZeroOrOne("w:rPr")
+    t = ZeroOrMore("w:t")
+    br = ZeroOrMore("w:br")
+    cr = ZeroOrMore("w:cr")
+    fldsimple = ZeroOrMore("w:fldSimple")
+    tab = ZeroOrMore("w:tab")
+    drawing = ZeroOrMore("w:drawing")
+
+    def add_field(self, fieldtype=WD_FIELD_TYPE.REF, switches="\h"):
+        """Return a newly created ``<w:fldSimple>`` element containing a fieldcode."""
+        fld = self._add_fldsimple(
+            instr=WD_FIELD_TYPE.to_xml(fieldtype) + f" {switches}"
+        )
+        return fld
 
     def _insert_rPr(self, rPr):
         self.insert(0, rPr)

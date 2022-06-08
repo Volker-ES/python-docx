@@ -6,11 +6,13 @@ Run-related proxy objects for python-docx, Run in particular.
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-from ..enum.style import WD_STYLE_TYPE
-from ..enum.text import WD_BREAK
-from .font import Font
-from ..shape import InlineShape
-from ..shared import Parented
+from docx.enum.fields import WD_FIELD_TYPE
+from docx.enum.style import WD_STYLE_TYPE
+from docx.enum.text import WD_BREAK
+from docx.shape import InlineShape
+from docx.shared import Parented
+from docx.text.fields import Field
+from docx.text.font import Font
 
 
 class Run(Parented):
@@ -45,6 +47,16 @@ class Run(Parented):
             br.type = type_
         if clear is not None:
             br.clear = clear
+
+    def add_field(self, fieldtype=WD_FIELD_TYPE.REF, switches=None):
+        """
+        Return a |Field| element which will be evaluated upon updating the
+        fields in the word editor. A field should be a member of the `WD_FIELD_TYPE`
+        enumeration. An can have various different switches. For example a 'REF'
+        field requires a bookmark name and a \h switch to work as a proper hyperlink.
+        """
+        fld = self._r.add_field(fieldtype, switches)
+        return Field(fld)
 
     def add_picture(self, image_path_or_stream, width=None, height=None):
         """
