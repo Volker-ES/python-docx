@@ -42,7 +42,7 @@ del (
     CT,
     CorePropertiesPart,
     DocumentPart,
-    EndNotesPart,
+    EndnotesPart,
     FooterPart,
     FootnotesPart,
     HeaderPart,
